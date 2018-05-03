@@ -1,0 +1,11 @@
+KIT: https://produto.mercadolivre.com.br/MLB-901613170-kit-raspberry-pi3-b-fonte-case-oficial-hdmi-carto-32gb-_JM
+
+DISPLAY: https://www.filipeflop.com/produto/display-lcd-20x4-backlight-azul/
+PROTOBOARD: https://www.filipeflop.com/produto/protoboard-400-pontos/
+JUMPERS: https://www.filipeflop.com/produto/kit-jumpers-10cm-x120-unidades/
+
+CAMERA: https://produto.mercadolivre.com.br/MLB-714946256-modulo-cmera-para-raspberry-pi-5mp-cabo-flat-_JM
+
+INTERFACE AUDIO: https://produto.mercadolivre.com.br/MLB-968922904-placa-de-som-usb-adaptador-audio-71-c-p2-pc-notebook-_JM
+
+MICROFONE: https://produto.mercadolivre.com.br/MLB-703203926-microfone-mesa-pc-com-base-ideal-videos-yotube-gameplay-novo-_JM
