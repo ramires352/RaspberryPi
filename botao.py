@@ -1,25 +1,44 @@
 import RPi.GPIO as GPIO
+import datetime
+import locale
 from time import sleep
 from picamera import PiCamera
 
-GPIO.setmode(GPIO.BCM)
+#Localização PT-BR
+locale.setlocale(locale.LC_ALL, str("pt_BR.UTF-8"))
+
+#Utiliza a numeração física dos pinos GPIO
+GPIO.setmode(GPIO.BOARD)
+
 camera = PiCamera()
+
+#Rotaciona a Imagem 180 graus
 camera.rotation = 180
+
+#Pino do botao que aciona a camera
+pinBotCam = 12
 
 i = 1
 
-
-GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(pinBotCam, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 anterior = True
 
 while True:
-    atual = GPIO.input(18)
-    if atual == False and anterior == True:
+    bot_cam = GPIO.input(pinBotCam)
+    if bot_cam == False and anterior == True:
         print("Botao Apertado")
+        
+        #pega a data atual
+        now = datetime.datetime.now().strftime("%B %d, %Y\n%H:%M")
+                                               
         camera.start_preview()
+                                               
+        #escreve a data atual na imagem                                       
+        camera.annotate_text = now
+                                               
         sleep(2)
-        camera.capture("/home/pi/Desktop/imagem"+str(i)+".jpg")
+        camera.capture("/home/pi/Desktop/imagem%s.jpg" % i)
         print("Imagem capturada")
         i+=1
-    anterior = atual
+    anterior = bot_cam
