@@ -11,6 +11,8 @@ locale.setlocale(locale.LC_ALL, str("pt_BR.UTF-8"))
 #Utiliza a numeração física dos pinos GPIO
 GPIO.setmode(GPIO.BOARD)
 
+GPIO.setwarnings(False)
+
 camera = PiCamera()
 
 #Rotaciona a Imagem 180 graus
@@ -23,6 +25,7 @@ pinRecTimeUP = 35
 pinRecTimeDOWN = 37
 pinLedAmarelo = 40
 pinLedVermelho = 38
+pinLedVerde = 36
 
 
 #Diretorio das mensagens
@@ -33,6 +36,7 @@ GPIO.setup(pinRecTimeUP, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(pinRecTimeDOWN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(pinLedAmarelo, GPIO.OUT)
 GPIO.setup(pinLedVermelho, GPIO.OUT)
+GPIO.setup(pinLedVerde, GPIO.OUT)
 
 estadoAntBotCam = True
 estadoAntBotRecUP = True
@@ -41,22 +45,8 @@ estadoAntBotRecDOWN = True
 #Tempo inicial de gravacao (segundos)
 recTime = 10
 
-def capturarImagem():
-    print("Botao Apertado")
-        
-    #pega a data atual
-    info = datetime.datetime.now().strftime("%B %d, %Y\n%H:%M")
-        
-    dia = datetime.datetime.now().strftime("%d-%m-%Y/")
-    hr = datetime.datetime.now().strftime("%H-%M-%S")
-        
-    #Verifica se ja existe um pasta com o dia
-    if not os.path.exists(msgDir + dia):
-        os.makedirs(msgDir + dia)
-        
-    #Verifica se ja existe uma pasta com a hora
-    if not os.path.exists(msgDir + dia + "/" + hr):
-        os.makedirs(msgDir + dia + "/" + hr)
+def capturarImagem(path, info):
+    print("Capturando Imagem...")
         
     GPIO.output(pinLedAmarelo, GPIO.HIGH)
     
@@ -67,18 +57,53 @@ def capturarImagem():
                                                
     sleep(2)
     
-    camera.capture(msgDir + dia + hr + "/" + hr + ".jpg")
+    camera.capture(path + ".jpg")
     print("Imagem capturada")
     
     GPIO.output(pinLedAmarelo, GPIO.LOW)
+
     
+def gravarAudio(path, recTime):
+    print("Gravando Audio...")
     
+    GPIO.output(pinLedVermelho, GPIO.HIGH)
+    
+    os.system("arecord -D hw:1,0 -d " + str(recTime) + " -f cd " + path + ".wav -c 1")
+    
+    print("Audio Gravado!")
+    
+    GPIO.output(pinLedVermelho, GPIO.LOW)
 
 while True:
     estadoBotCam = GPIO.input(pinBotCam)
     if estadoBotCam == False and estadoAntBotCam == True:
-        capturarImagem()
-        print("botao camera")
+        #pega a data atual
+        info = datetime.datetime.now().strftime("%B %d, %Y\n%H:%M")
+        
+        dia = datetime.datetime.now().strftime("%d-%m-%Y/")
+        hr = datetime.datetime.now().strftime("%H-%M-%S")
+        
+        path = msgDir + dia + hr + "/" + hr
+        
+        #Verifica se ja existe um pasta com o dia
+        if not os.path.exists(msgDir + dia):
+            os.makedirs(msgDir + dia)
+            
+        #Verifica se ja existe uma pasta com a hora
+        if not os.path.exists(msgDir + dia + "/" + hr):
+            os.makedirs(msgDir + dia + "/" + hr)
+            
+        capturarImagem(path, info)
+        #print("botao camera")
+        gravarAudio(path, recTime)
+        
+        print("Mensagem Salva!")
+        
+        GPIO.output(pinLedVerde, GPIO.HIGH)
+        sleep(1)
+        GPIO.output(pinLedVerde, GPIO.LOW)
+        
+        recTime = 10
     estadoAntBotCam = estadoBotCam
     
     estadoBotRecUP = GPIO.input(pinRecTimeUP)
