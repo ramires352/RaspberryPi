@@ -100,7 +100,7 @@ while True:
         print("Mensagem Salva!")
         
         GPIO.output(pinLedVerde, GPIO.HIGH)
-        sleep(1)
+        sleep(2)
         GPIO.output(pinLedVerde, GPIO.LOW)
         
         recTime = 10
