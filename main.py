@@ -2,8 +2,11 @@ import RPi.GPIO as GPIO
 import datetime
 import locale
 import os
+import I2C_LCD_driver
+import time
 from time import sleep
 from picamera import PiCamera
+
 
 #Localização PT-BR
 locale.setlocale(locale.LC_ALL, str("pt_BR.UTF-8"))
@@ -14,6 +17,7 @@ GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
 
 camera = PiCamera()
+display = I2C_LCD_driver.lcd()
 
 #Rotaciona a Imagem 180 graus
 camera.rotation = 180
@@ -45,8 +49,17 @@ estadoAntBotRecDOWN = True
 #Tempo inicial de gravacao (segundos)
 recTime = 10
 
+display.lcd_display_string("Porta Interativa",1,2)
+display.lcd_display_string("Tempo: %is" % recTime,4,0)
+
+#intervalo para limpar a linha 3 do display (segundos)
+intervalo = 2
+
+t1 = 0
+
+
 def capturarImagem(path, info):
-    print("Capturando Imagem...")
+    display.lcd_display_string("Capturando Imagem...",2,0)
         
     GPIO.output(pinLedAmarelo, GPIO.HIGH)
     
@@ -58,23 +71,36 @@ def capturarImagem(path, info):
     sleep(2)
     
     camera.capture(path + ".jpg")
-    print("Imagem capturada")
+    
+    limparLinha(2)
+    display.lcd_display_string("Imagem Caputurada!",2,0)
     
     GPIO.output(pinLedAmarelo, GPIO.LOW)
-
+    
+    sleep(2)
+    limparLinha(2)
     
 def gravarAudio(path, recTime):
-    print("Gravando Audio...")
+    display.lcd_display_string("Gravando Audio...",2,0)
     
     GPIO.output(pinLedVermelho, GPIO.HIGH)
     
     os.system("arecord -D hw:1,0 -d " + str(recTime) + " -f cd " + path + ".wav -c 1")
     
-    print("Audio Gravado!")
+    limparLinha(2)
+    display.lcd_display_string("Audio Gravado!",2,0)
     
     GPIO.output(pinLedVermelho, GPIO.LOW)
+    
+    sleep(2)
+    limparLinha(2)
+
+def limparLinha(linha):
+    display.lcd_display_string(" "*20,linha,0)
 
 while True:
+    t0 = time.time()
+    
     estadoBotCam = GPIO.input(pinBotCam)
     if estadoBotCam == False and estadoAntBotCam == True:
         #pega a data atual
@@ -94,15 +120,16 @@ while True:
             os.makedirs(msgDir + dia + "/" + hr)
             
         capturarImagem(path, info)
-        #print("botao camera")
         gravarAudio(path, recTime)
         
-        print("Mensagem Salva!")
+        limparLinha(2)
+        display.lcd_display_string("Mensagem Gravada!",2,0)
         
         GPIO.output(pinLedVerde, GPIO.HIGH)
         sleep(2)
         GPIO.output(pinLedVerde, GPIO.LOW)
         
+        limparLinha(2)
         recTime = 10
     estadoAntBotCam = estadoBotCam
     
@@ -110,18 +137,33 @@ while True:
     if estadoBotRecUP == False and estadoAntBotRecUP == True:
         recTime += 5
         if recTime == 35:
-            print("tempo maximo de 30 segundos")
+            limparLinha(3)
+            display.lcd_display_string("Tempo Maximo 30s",3,0)
+            t1 = time.time()
             recTime = 30
-        print("Tempo de gravação: %i" % recTime)
+        display.lcd_display_string("Tempo: %is" % recTime,4,0)
     estadoAntBotRecUP = estadoBotRecUP
     
     estadoBotRecDOWN = GPIO.input(pinRecTimeDOWN)
     if estadoBotRecDOWN == False and estadoAntBotRecDOWN == True:
         recTime -= 5
-        if recTime == 0:
-            print("tempo minimo de 5 segundos")
+        if recTime == 5:
+            display.lcd_display_string("Tempo: 0%is" % recTime,4,0)
+            
+        elif recTime == 0:
             recTime = 5
-        print("Tempo de gravação: %i" % recTime)
+            limparLinha(3)
+            display.lcd_display_string("Tempo Minimo 05s",3,0)
+            t1 = time.time()
+            display.lcd_display_string("Tempo: 0%is" % recTime,4,0)
+            
+        else:
+            display.lcd_display_string("Tempo: %is" % recTime,4,0)
+            
     estadoAntBotRecDOWN = estadoBotRecDOWN
     
     sleep(0.1)
+    
+    if t0-t1 > intervalo:
+        limparLinha(3)
+        t0 = time.time()
