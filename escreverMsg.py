@@ -1,6 +1,7 @@
 #Código responsável por receber uma mensagem por parametro e mostrar no display
 import I2C_LCD_driver
 import sys, getopt
+from time import sleep
 
 def main(argv):
     try:
