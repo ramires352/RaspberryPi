@@ -62,27 +62,43 @@ class Application:
         ip = self.IP.get()
         mensagem = self.mensagem.get()
         self.aviso["text"] = "Mensagem Enviada!"
-        print(ip, mensagem)
+        #Configurar o SSH para conectar ao RaspberryPi
+        buff = ''
+        resp = ''
+        
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(ip, username='pi', password='ramires2313')
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        chan = ssh.invoke_shell()
 
-class SSH:
-    def __init__(self, ip):
-        self.ssh = SSHClient()
-        self.ssh.load_system_host_keys()
-        self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy)
-        self.ssh.connect(hostname=ip, username='ramires', password='Warewolf1432?')
+        comandoMsg = "escreverMsg.py -m " + mensagem
 
-    def exec_cmd(self,cmd):
-        stdin, stdout, stderr = self.ssh.exec_command(cmd)
-        if stderr.channel.recv_exit_status() != 0:
-            print(stderr.read())
-        else:
-            print(stdout.read())
+        # turn off paging
+        chan.send('terminal length 0\n')
+        #time.sleep(1)
+        resp = chan.recv(9999)
+        output = resp.decode('utf-8').split(',')
+        #print (''.join(output))
+
+        # Display output of first command
+        chan.send('cd GIT/RaspberryPi')
+        chan.send('\n')
+        #time.sleep(1)
+        resp = chan.recv(9999)
+        output = resp.decode('utf-8').split(',')
+        print (''.join(output))
+
+        # Display output of second command
+        chan.send(comandoMsg)
+        chan.send('\n')
+        #time.sleep(1)
+        resp = chan.recv(9999)
+        output = resp.decode('utf-8').split(',')
+        print (''.join(output))
+
+        ssh.close()
 
 root = Tk()
 Application(root)
 root.mainloop()
-
-if __name__ == "__main__":
-    ssh = SSH("127.0.0.1")
-    ssh.exec_cmd("apt update")
-
