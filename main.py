@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 import RPi.GPIO as GPIO
 import datetime
 import locale
@@ -9,7 +10,8 @@ from picamera import PiCamera
 
 
 #Localização PT-BR
-locale.setlocale(locale.LC_ALL, str("pt_BR.UTF-8"))
+#A localização pt-BR buga para escrever caractere especial na imagem, por exemplo "março"
+#locale.setlocale(locale.LC_ALL, str("pt_BR.UTF-8"))
 
 #Utiliza a numeração física dos pinos GPIO
 GPIO.setmode(GPIO.BOARD)
