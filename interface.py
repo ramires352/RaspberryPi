@@ -21,6 +21,14 @@ class Application:
         self.quartoContainer = Frame(master)
         self.quartoContainer["pady"] = 20
         self.quartoContainer.pack()
+
+        self.quintoContainer = Frame(master)
+        self.quintoContainer["padx"] = 20
+        self.quintoContainer.pack()
+
+        self.sextoContainer = Frame(master)
+        self.sextoContainer["pady"] = 20
+        self.sextoContainer.pack()
   
         self.titulo = Label(self.primeiroContainer, text="Porta Interativa")
         self.titulo["font"] = ("Arial", "10", "bold")
@@ -33,26 +41,43 @@ class Application:
         self.IP["width"] = 30
         self.IP["font"] = self.fontePadrao
         self.IP.pack(side=LEFT)
+
+        self.usuarioLabel = Label(self.terceiroContainer,text="Usuário", font=self.fontePadrao)
+        self.usuarioLabel.pack(side=LEFT)
   
-        self.mensagemLabel = Label(self.terceiroContainer, text="Mensagem", font=self.fontePadrao)
+        self.usuario = Entry(self.terceiroContainer)
+        self.usuario["width"] = 26
+        self.usuario["font"] = self.fontePadrao
+        self.usuario.pack(side=LEFT)
+
+        self.senhaLabel = Label(self.quartoContainer,text="Senha", font=self.fontePadrao)
+        self.senhaLabel.pack(side=LEFT)
+  
+        self.senha = Entry(self.quartoContainer)
+        self.senha["width"] = 27
+        self.senha["font"] = self.fontePadrao
+        self.senha["show"] = "*"
+        self.senha.pack(side=LEFT)
+  
+        self.mensagemLabel = Label(self.quintoContainer, text="Mensagem", font=self.fontePadrao)
         self.mensagemLabel.pack(side=LEFT)
   
-        self.mensagem = Entry(self.terceiroContainer)
+        self.mensagem = Entry(self.quintoContainer)
         self.mensagem["width"] = 23
         self.mensagem["font"] = self.fontePadrao
         self.mensagem.pack(side=LEFT)
 
-        self.aviso = Label(self.quartoContainer, text="", font=self.fontePadrao)
+        self.aviso = Label(self.sextoContainer, text="", font=self.fontePadrao)
         self.aviso.pack()
 
-        self.enviar = Button(self.quartoContainer)
+        self.enviar = Button(self.sextoContainer)
         self.enviar["text"] = "Escrever"
         self.enviar["font"] = ("Calibri", "10")
         self.enviar["width"] = 12
         self.enviar["command"] = self.enviarMensagem
         self.enviar.pack(side=RIGHT)
 
-        self.sair = Button(self.quartoContainer)
+        self.sair = Button(self.sextoContainer)
         self.sair["text"] = "Sair"
         self.sair["font"] = ("Calibri", "10")
         self.sair["width"] = 12
@@ -62,21 +87,23 @@ class Application:
     def enviarMensagem(self):
         ip = self.IP.get()
         mensagem = self.mensagem.get()
+        usuario = self.usuario.get()
+        senha = self.senha.get()
         self.aviso["text"] = "Mensagem Enviada!"
 
         comandoMsg = "python3 GIT/RaspberryPi/escreverMsg.py -m '" + mensagem + "'"
 
-        ssh = SSH(ip)
+        ssh = SSH(ip, usuario, senha)
         ssh.exec_cmd(comandoMsg)
 
         #self.aviso["text"] = ""
 
 class SSH:
-    def __init__(self, ip):
+    def __init__(self, ip, usuario, senha):
         self.ssh = SSHClient()
         self.ssh.load_system_host_keys()
         self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        self.ssh.connect(hostname=ip,username='pi',password='ramires2313')
+        self.ssh.connect(hostname=ip,username=usuario,password=senha)
  
     def exec_cmd(self,cmd):
         stdin,stdout,stderr = self.ssh.exec_command(cmd)
