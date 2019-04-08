@@ -23,7 +23,7 @@ def main(argv):
     #Escrever mensagem no display
     display.lcd_display_string(mensagem, 3, 0)
     #Esperar 5 segundos
-    sleep(tempo)
+    sleep(int(tempo))
     #Apagar a mensagem do display
     display.lcd_display_string(" "*20,3,0)
 
