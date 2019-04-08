@@ -133,14 +133,14 @@ while True:
         
         limparLinha(2)
         recTime = 10
+        limparLinha(3)
+        display.lcd_display_string("Tempo: %is" % recTime,4,0)
     estadoAntBotCam = estadoBotCam
     
     estadoBotRecUP = GPIO.input(pinRecTimeUP)
     if estadoBotRecUP == False and estadoAntBotRecUP == True:
         recTime += 5
         if recTime == 35:
-            limparLinha(3)
-            display.lcd_display_string("Tempo Maximo 30s",3,0)
             t1 = time.time()
             recTime = 30
         display.lcd_display_string("Tempo: %is" % recTime,4,0)
@@ -154,8 +154,6 @@ while True:
             
         elif recTime == 0:
             recTime = 5
-            limparLinha(3)
-            display.lcd_display_string("Tempo Minimo 05s",3,0)
             t1 = time.time()
             display.lcd_display_string("Tempo: 0%is" % recTime,4,0)
             
@@ -165,7 +163,3 @@ while True:
     estadoAntBotRecDOWN = estadoBotRecDOWN
     
     sleep(0.1)
-    
-    if t0-t1 > intervalo:
-        limparLinha(3)
-        t0 = time.time()
