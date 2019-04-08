@@ -33,7 +33,6 @@ pinLedAmarelo = 40
 pinLedVermelho = 38
 pinLedVerde = 36
 
-
 #Diretorio das mensagens
 msgDir = "/home/pi/Desktop/Mensagens/"
 
@@ -53,11 +52,6 @@ recTime = 10
 
 display.lcd_display_string("Porta Interativa",1,2)
 display.lcd_display_string("Tempo: %is" % recTime,4,0)
-
-#intervalo para limpar a linha 3 do display (segundos)
-intervalo = 2
-
-t1 = 0
 
 
 def capturarImagem(path, info):
@@ -140,7 +134,6 @@ while True:
     if estadoBotRecUP == False and estadoAntBotRecUP == True:
         recTime += 5
         if recTime == 35:
-            t1 = time.time()
             recTime = 30
         display.lcd_display_string("Tempo: %is" % recTime,4,0)
     estadoAntBotRecUP = estadoBotRecUP
@@ -153,7 +146,6 @@ while True:
             
         elif recTime == 0:
             recTime = 5
-            t1 = time.time()
             display.lcd_display_string("Tempo: 0%is" % recTime,4,0)
             
         else:
