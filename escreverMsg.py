@@ -3,6 +3,8 @@ import I2C_LCD_driver
 import sys, getopt
 from time import sleep
 
+display = I2C_LCD_driver.lcd()
+
 def main(argv):
     try:
         opts, args = getopt.getopt(argv, "hm:d:")
@@ -18,8 +20,6 @@ def main(argv):
         elif opt == "-d":
             tempo = arg
     
-    display = I2C_LCD_driver.lcd()
-
     #Escrever mensagem no display
     display.lcd_display_string(mensagem, 3, 0)
     #Esperar tempo minutos
@@ -28,4 +28,6 @@ def main(argv):
     display.lcd_display_string(" "*20,3,0)
 
 if __name__ == "__main__":
+    display.lcd_display_string("Porta Interativa",1,2)
+    display.lcd_display_string("Tempo: 10s",4,0)
     main(sys.argv[1:])

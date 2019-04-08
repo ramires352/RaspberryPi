@@ -133,7 +133,6 @@ while True:
         
         limparLinha(2)
         recTime = 10
-        limparLinha(3)
         display.lcd_display_string("Tempo: %is" % recTime,4,0)
     estadoAntBotCam = estadoBotCam
     
