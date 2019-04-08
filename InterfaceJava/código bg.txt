@@ -1,0 +1,17 @@
+    public void paintComponent(Graphics g){
+
+        ClassLoader cl = this.getClass().getClassLoader();
+
+        ImageIcon im = new ImageIcon(cl.getResource("images/bg1.jpg"));
+        Image i = im.getImage();
+
+        g.drawImage(i,0,0,this.getSize().width,this.getSize().height,this);
+
+    }
+
+
+
+
+import java.awt.Graphics;
+import java.awt.Image;
+import javax.swing.ImageIcon;
