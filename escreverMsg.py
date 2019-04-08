@@ -5,7 +5,7 @@ from time import sleep
 
 def main(argv):
     try:
-        opts, args = getopt.getopt(argv, "hm:")
+        opts, args = getopt.getopt(argv, "hm:d:")
     except getopt.GetoptError:
         print("escreverMsg.py -m <menssagem>")
         sys.exit(2)
@@ -15,13 +15,15 @@ def main(argv):
             sys.exit()
         elif opt == "-m":
             mensagem = arg
+        elif opt == "-d":
+            tempo = arg
     
     display = I2C_LCD_driver.lcd()
 
     #Escrever mensagem no display
     display.lcd_display_string(mensagem, 3, 0)
     #Esperar 5 segundos
-    sleep(5)
+    sleep(tempo)
     #Apagar a mensagem do display
     display.lcd_display_string(" "*20,3,0)
 
