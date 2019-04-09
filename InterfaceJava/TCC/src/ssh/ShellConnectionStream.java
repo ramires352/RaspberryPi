@@ -92,7 +92,7 @@ public class ShellConnectionStream {
 		}
 		return null;
 	}
-
+        
     /**
      * Upload a file from the specific location to a remote directory on server
      * @param origin Path pointing to the origin file
