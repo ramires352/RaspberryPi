@@ -250,12 +250,16 @@ public class TelaPrincipal extends javax.swing.JFrame {
             Process proc = Runtime.getRuntime().exec(comando);
             
             proc.waitFor();
-            labelLoad.setText("");
+            
             JOptionPane.showMessageDialog(null, "Mensagens obtidas com sucesso!");
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(null, "Falha ao obter mensagens!");
         } catch (InterruptedException ex) {
             JOptionPane.showMessageDialog(null, "Falha ao obter mensagens!");
+        }
+        finally{
+            labelLoad.setText("");
+            labelLoad.paintImmediately(labelLoad.getVisibleRect());
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -286,6 +290,10 @@ public class TelaPrincipal extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Falha ao obter a imagem!");
         } catch (InterruptedException ex) {
             JOptionPane.showMessageDialog(null, "Falha ao obter a imagem!");
+        }
+        finally{
+            labelLoad.setText("");
+            labelLoad.paintImmediately(labelLoad.getVisibleRect());
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
