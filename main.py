@@ -5,18 +5,13 @@ import os
 import I2C_LCD_driver
 import time
 from time import sleep
-from picamera import PiCamera
 
 #Utiliza a numeração física dos pinos GPIO
 GPIO.setmode(GPIO.BOARD)
 
 GPIO.setwarnings(False)
 
-camera = PiCamera()
 display = I2C_LCD_driver.lcd()
-
-#Rotaciona a Imagem 180 graus
-camera.rotation = 180
 
 #Pino do botao que aciona a camera
 pinBotCam = 12
@@ -52,15 +47,9 @@ def capturarImagem(path, info):
     display.lcd_display_string("Capturando Imagem...",2,0)
         
     GPIO.output(pinLedAmarelo, GPIO.HIGH)
-    
-    camera.start_preview()
-                                               
-    #escreve a data atual na imagem                                       
-    camera.annotate_text = info
-                                               
-    sleep(2)
-    
-    camera.capture(path + ".jpg")
+
+    #capturar imagem
+    os.system("python3 GIT/RaspberryPi/capturarImagemMsg.py -p "+path+" -i "+info)
     
     limparLinha(2)
     display.lcd_display_string("Imagem Caputurada!",2,0)
