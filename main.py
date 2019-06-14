@@ -49,7 +49,7 @@ def capturarImagem(path, info):
     GPIO.output(pinLedAmarelo, GPIO.HIGH)
 
     #capturar imagem
-    os.system("python3 GIT/RaspberryPi/capturarImagemMsg.py -p "+path+" -i "+info)
+    os.system("python3 /home/pi/GIT/RaspberryPi/capturarImagemMsg.py -p '"+ path + "' -i '" + str(info)+"'")
     
     limparLinha(2)
     display.lcd_display_string("Imagem Caputurada!",2,0)
@@ -64,7 +64,7 @@ def gravarAudio(path, recTime):
     
     GPIO.output(pinLedVermelho, GPIO.HIGH)
     
-    os.system("arecord -D hw:1,0 -d " + str(recTime) + " -f cd " + path + ".wav -c 1")
+    os.system("arecord -D hw:1,0 -d " + str(recTime) + " -f cd " + str(path) + ".wav -c 1")
     
     limparLinha(2)
     display.lcd_display_string("Audio Gravado!",2,0)
