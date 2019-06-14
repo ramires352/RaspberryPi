@@ -9,11 +9,11 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv, "hm:d:")
     except getopt.GetoptError:
-        print("escreverMsg.py -m <menssagem>")
+        print("escreverMsg.py -m <menssagem> -d <duracao>")
         sys.exit(2)
     for opt, arg in opts:
         if opt == "-h":
-            print("escreverMsg.py -m <menssagem>")
+            print("escreverMsg.py -m <menssagem> -d <duracao>")
             sys.exit()
         elif opt == "-m":
             mensagem = arg
